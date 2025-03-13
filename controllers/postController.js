@@ -8,6 +8,7 @@ const connection = require("../data/posts_db")
 
 //* index (read)
 function index(req, res) {
+    //!--------------------------------------!mySQL------------------------------------//
 
     //* logica dell'index
     // res.json(posts);// lista di tutti i post (o un filtro) in formato json
@@ -24,6 +25,7 @@ function index(req, res) {
 
     //task  restituisco l'array filteredPosts, filtrato o meno!
     // res.json(filteredPosts);
+    //!--------------------------------------!mySQL------------------------------------//
 
     //*--------------------------------------mySQL------------------------------------//
     //task inizializzo la query da usare in mySQL 
@@ -36,25 +38,48 @@ function index(req, res) {
         }
         res.json(results);
     });
+    //*--------------------------------------mySQL------------------------------------//
 }
 
 //* show (read)
 function show(req, res) {
+    //!--------------------------------------!mySQL------------------------------------//
     // res.send('Dettagli del post ' + req.params.id);
     // console.log(req.params.id); //* "req.params.id" ==> è un modo per accedere a parametri che vengono passati nell'URL di una richiesta in maniera dinamica!
     // res.json(posts[req.params.id]);
 
-    const postFound = posts.find((post) => post.id === parseInt(req.params.id))
+    // const postFound = posts.find((post) => post.id === parseInt(req.params.id))
 
     //task controllo
-    if (!postFound) {
-        return res.json({
-            error: "Not Found",
-            message: "Post non trovato"
-        })
-    }
+    // if (!postFound) {
+    //     return res.json({
+    //         error: "Not Found",
+    //         message: "Post non trovato"
+    //     })
+    // }
 
-    res.json(postFound)
+    // res.json(postFound)
+    //!--------------------------------------!mySQL------------------------------------//
+
+    //*--------------------------------------mySQL------------------------------------//
+    const { id } = req.params;
+    const readSql = "SELECT * FROM posts WHERE id = ?"
+
+    connection.query(readSql, [id], (err, results) => {
+        if (err) {
+            return res.status(500).json({
+                error: "DB error"
+            })
+        }
+        if (results.length === 0) {
+            return res.status(404).json({
+                error: "Not Found",
+                msg: "post non trovato"
+            })
+        };
+        res.json(results[0])
+    })
+    //*--------------------------------------mySQL------------------------------------//
 
 };
 
@@ -173,27 +198,51 @@ function patch(req, res) {
 
 //* destroy (delete)
 function destroy(req, res) {
-    // res.send('Eliminazione del post ' + req.params.id);
-    const deletedPost = posts.find((post) => post.id === parseInt(req.params.id))
+    //!--------------------------------------!mySQL------------------------------------//
+    // // res.send('Eliminazione del post ' + req.params.id);
+    // const deletedPost = posts.find((post) => post.id === parseInt(req.params.id))
 
-    //task controllo
-    if (!deletedPost) {
-        res.status(404)
-        return res.json({
-            status: 404,
-            error: "Not Found",
-            message: "Post non trovato"
-        })
-    }
+    // //task controllo
+    // if (!deletedPost) {
+    //     res.status(404)
+    //     return res.json({
+    //         status: 404,
+    //         error: "Not Found",
+    //         message: "Post non trovato"
+    //     })
+    // }
 
-    //task Rimuoviamo il post
-    posts.splice(posts.indexOf(deletedPost), 1);
+    // //task Rimuoviamo il post
+    // posts.splice(posts.indexOf(deletedPost), 1);
 
-    //task ritorno un console log dell'array SENZA il post appena eliminato
-    console.log(posts)
+    // //task ritorno un console log dell'array SENZA il post appena eliminato
+    // console.log(posts)
 
-    //Restituiamo lo stato corretto
-    res.sendStatus(204)
+    // //Restituiamo lo stato corretto
+    // res.sendStatus(204)
+    //!--------------------------------------!mySQL------------------------------------//
+
+    //*--------------------------------------mySQL------------------------------------//
+    //task destructuring
+    const { id } = req.params
+
+    //task inizializzo la query da usare in mySQL 
+    const delSql = "DELETE FROM posts WHERE id = ?"
+
+    connection.query(delSql, [id], (err) => {
+
+        //task controllo oggetto non trovato
+        res.status(404) && res.json({ error: "Obj Not Found" })
+
+        if (err) {
+            return res.status(500)
+                .json({ error: 'Database connection failed' });
+        }
+        res.sendStatus(204)
+    });
+    //*--------------------------------------mySQL------------------------------------//
+
+
 
 };
 
