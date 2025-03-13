@@ -75,18 +75,23 @@ function show(req, res) {
     `
 
     connection.query(readSql, [id], (err, postResults) => {
+        //task Gestione errore per la query del post
         if (err) {
             return res.status(500).json({
                 error: "DB error"
             })
         }
-        if (results.length === 0) {
+
+        //task caso in cui il post non viene trovato.
+        if (postResults.length === 0) {
             return res.status(404).json({
                 error: "Not Found",
                 msg: "post non trovato"
             })
         };
+
         // res.json(results[0]) //* questo diventa una nuova costante nell'aggiunta del bonus
+        //task 
         const post = postResults[0]
 
         //task bonus
@@ -94,13 +99,11 @@ function show(req, res) {
             if (err) {
                 return res.status(500).json({ error: "db query failed" })
             }
-
             post.tags = tagResults;
             res.json(post)
         });
     })
     //*--------------------------------------mySQL------------------------------------//
-
 };
 
 //* store (create) (piu in uso in un ambiente database)
@@ -261,8 +264,6 @@ function destroy(req, res) {
         res.sendStatus(204)
     });
     //*--------------------------------------mySQL------------------------------------//
-
-
 
 };
 
