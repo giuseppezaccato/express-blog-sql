@@ -65,7 +65,7 @@ function show(req, res) {
     const { id } = req.params;
     const readSql = "SELECT * FROM posts WHERE id = ?"
 
-    //task bonus
+    //task bonus*
     const bonusSql = `
     SELECT T.*
     FROM tags AS T
@@ -90,11 +90,11 @@ function show(req, res) {
             })
         };
 
-        // res.json(results[0]) //* questo diventa una nuova costante nell'aggiunta del bonus
-        //task 
+        // res.json(results[0]) //* questo diventa una nuova costante nell'aggiunta del bonus*
+        //task Estraggo il post dal risultato della query
         const post = postResults[0]
 
-        //task bonus
+        //task bonus*
         connection.query(bonusSql, [id], (err, tagResults) => {
             if (err) {
                 return res.status(500).json({ error: "db query failed" })
@@ -261,7 +261,7 @@ function destroy(req, res) {
             return res.status(500)
                 .json({ error: 'Database connection failed' });
         }
-        res.sendStatus(204)
+        res.sendStatus(204) //task Se l'eliminazione ha successo, restituisce una risposta con codice di stato 204 (No Content)
     });
     //*--------------------------------------mySQL------------------------------------//
 
