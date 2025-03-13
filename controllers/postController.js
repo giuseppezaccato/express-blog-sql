@@ -65,7 +65,16 @@ function show(req, res) {
     const { id } = req.params;
     const readSql = "SELECT * FROM posts WHERE id = ?"
 
-    connection.query(readSql, [id], (err, results) => {
+    //task bonus
+    const bonusSql = `
+    SELECT T.*
+    FROM tags AS T
+    JOIN post_tag as PT 
+    ON T.id = PT.tag_id
+    WHERE PT.post_id = ?
+    `
+
+    connection.query(readSql, [id], (err, postResults) => {
         if (err) {
             return res.status(500).json({
                 error: "DB error"
@@ -77,7 +86,18 @@ function show(req, res) {
                 msg: "post non trovato"
             })
         };
-        res.json(results[0])
+        // res.json(results[0]) //* questo diventa una nuova costante nell'aggiunta del bonus
+        const post = postResults[0]
+
+        //task bonus
+        connection.query(bonusSql, [id], (err, tagResults) => {
+            if (err) {
+                return res.status(500).json({ error: "db query failed" })
+            }
+
+            post.tags = tagResults;
+            res.json(post)
+        });
     })
     //*--------------------------------------mySQL------------------------------------//
 
