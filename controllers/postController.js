@@ -2,6 +2,9 @@
 //task importo i posts da data.js
 const posts = require("../data/data")
 
+//task import conncection
+const connection = require("../data/posts_db")
+
 
 //* index (read)
 function index(req, res) {
@@ -12,16 +15,28 @@ function index(req, res) {
     // fakeFunction() //?controllo per vedere il funzionamento di errorsHandler su app.js
 
     //task faccio coincidere filteredPosts con l'array iniziale
-    let filteredPosts = posts;
+    // let filteredPosts = posts;
 
     //task  Se la richiesta contiene un filtro(req.query.tags = true/false => booleano), allora entriamo nell'IF
-    if (req.query.tags) {
-        filteredPosts = posts.filter(post => post.tags.includes(req.query.tags));
-    }
+    // if (req.query.tags) {
+    //     filteredPosts = posts.filter(post => post.tags.includes(req.query.tags));
+    // }
 
     //task  restituisco l'array filteredPosts, filtrato o meno!
-    res.json(filteredPosts);
-};
+    // res.json(filteredPosts);
+
+    //*--------------------------------------mySQL------------------------------------//
+    //task inizializzo la query da usare in mySQL 
+    const sql = 'SELECT * FROM posts'
+
+    connection.query(sql, (err, results) => {
+        if (err) {
+            return res.status(500)
+                .json({ error: 'Database connection failed' });
+        }
+        res.json(results);
+    });
+}
 
 //* show (read)
 function show(req, res) {

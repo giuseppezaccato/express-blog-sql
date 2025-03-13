@@ -6,12 +6,14 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'posts'
+    database: 'posts_db'
 });
 
+//FIX {throw err != return err} riguarda poi tutto e cerca la spiegazione!
+
 connection.connect((err) => {
-    if (err) throw err;
-    console.log('Connected to MySQL!');
+    if (err) return err;
+    console.log('Connected to MySQL database!');
 });
 
 //task export oggetto "connessione" 
