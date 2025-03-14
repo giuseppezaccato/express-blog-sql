@@ -28,6 +28,9 @@ function index(req, res) {
     //!--------------------------------------!mySQL------------------------------------//
 
     //*--------------------------------------mySQL------------------------------------//
+    // const {id} = req.params 
+    //! stiamo richiedendo TUTTO il database, non ho bisogno di id specifici, questa riga è superflua in INDEX!
+
     //task inizializzo la query da usare in mySQL 
     const sql = 'SELECT * FROM posts'
 
@@ -67,7 +70,7 @@ function show(req, res) {
 
     //task bonus*
     const bonusSql = `
-    SELECT T.*
+    SELECT T.label
     FROM tags AS T
     JOIN post_tag as PT 
     ON T.id = PT.tag_id

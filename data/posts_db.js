@@ -6,7 +6,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'posts_db'
+    database: 'posts_db' //* fa riferimento al nome del database creato in workbench!
 });
 
 //fix throw err != return err => differenze principali!
